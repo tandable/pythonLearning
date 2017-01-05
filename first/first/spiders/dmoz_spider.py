@@ -1,4 +1,5 @@
 import scrapy
+from first.items import DmozItem
 
 class DmozSpider(scrapy.Spider):
 	name = 'dmoz'
@@ -8,10 +9,14 @@ class DmozSpider(scrapy.Spider):
 	def parse(self, response): 
 		sel = scrapy.selector.Selector(response)
 		sites = sel.xpath('//div[@class="title-and-desc"]')
+		items = []
 		for site in sites:
-			title = site.xpath('a/div/text()').extract()
-			link = site.xpath('a/@href').extract()
-			desc = site.xpath('div/text()').extract()
-			print(title, link, desc)
+			item = DmozItem()
+			item['title'] = site.xpath('a/div/text()').extract()
+			item['link'] = site.xpath('a/@href').extract()
+			item['desc'] = site.xpath('div/text()').extract()
+			items.append(item)
+
+		return items
 
 		
